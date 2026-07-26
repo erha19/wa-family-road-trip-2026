@@ -742,6 +742,8 @@ svg.leaflet-image-layer.leaflet-interactive path {
       white-space: nowrap;
     }
 
+    .page-link-short { display: none; }
+
     .page-link:hover { background: rgba(255, 255, 255, .16); }
 
     .top-stat {
@@ -1181,35 +1183,103 @@ svg.leaflet-image-layer.leaflet-interactive path {
 
     @media (max-width: 900px) {
       html, body { height: auto; min-height: 100%; }
-      .topbar { min-height: 0; padding: 12px 14px; align-items: flex-start; }
-      .brand-mark { width: 38px; height: 38px; }
-      .brand h1 { font-size: 17px; }
-      .brand p { font-size: 10px; }
-      .top-stats .top-stat:not(:first-child) { display: none; }
-      .page-link { margin-left: auto; }
-      .top-stat { min-width: 76px; padding: 7px 9px; }
+      body { overflow-x: hidden; }
+      .topbar {
+        min-height: 58px;
+        padding: 9px max(12px, env(safe-area-inset-left)) 9px max(12px, env(safe-area-inset-right));
+        align-items: center;
+        gap: 10px;
+      }
+      .brand { gap: 9px; }
+      .brand-mark { width: 36px; height: 36px; border-radius: 11px; font-size: 18px; }
+      .brand h1 { font-size: 16px; }
+      .brand p { font-size: 9px; }
+      .top-stats { display: none; }
+      .page-link {
+        min-height: 40px;
+        margin-left: auto;
+        padding: 0 11px;
+        display: grid;
+        place-items: center;
+      }
       .app { height: auto; display: flex; flex-direction: column; }
-      .map-shell { order: 1; height: 56vh; min-height: 390px; }
-      .side { order: 2; overflow: visible; padding: 14px; border: 0; }
-      .day-nav { top: 0; grid-template-columns: repeat(5, 1fr); }
+      .app,
+      .side,
+      .map-shell { width: 100%; min-width: 0; }
+      .map-shell {
+        order: 1;
+        height: 46svh;
+        min-height: 320px;
+        max-height: 430px;
+      }
+      .side {
+        order: 2;
+        overflow: visible;
+        padding: 0 14px max(22px, env(safe-area-inset-bottom));
+        display: flex;
+        flex-direction: column;
+        border: 0;
+      }
+      .day-nav {
+        order: 1;
+        top: 0;
+        margin: 0 -14px;
+        padding: 10px 14px 11px;
+        display: flex;
+        gap: 7px;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        scrollbar-width: none;
+        background: rgba(247, 245, 239, .94);
+        border-bottom: 1px solid rgba(210, 214, 207, .9);
+        box-shadow: 0 8px 20px rgba(31, 54, 44, .07);
+        backdrop-filter: blur(16px);
+        -webkit-overflow-scrolling: touch;
+      }
+      .day-nav::-webkit-scrollbar { display: none; }
+      .day-button {
+        min-width: 52px;
+        min-height: 44px;
+        flex: 0 0 auto;
+        padding-inline: 9px;
+      }
+      .detail { order: 2; padding: 17px 0 10px; }
+      .intro { order: 3; margin-top: 8px; }
       .intro { padding: 15px; }
       .legend { bottom: 22px; right: 10px; width: 210px; }
       .map-toolbar { top: 10px; right: 10px; }
-      .map-tool { padding: 7px 10px; }
+      .map-tool { min-height: 44px; padding: 8px 11px; }
+      .overview-day { min-height: 54px; }
+      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .metric { min-width: 0; }
+      .source-links a { min-height: 36px; display: inline-flex; align-items: center; }
     }
 
-    @media (max-width: 460px) {
-      .top-stat { display: none; }
-      .brand p { max-width: 260px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-      .map-shell { height: 52vh; min-height: 350px; }
+    @media (max-width: 520px) {
+      .brand p { display: none; }
+      .page-link-full { display: none; }
+      .page-link-short { display: inline; }
+      .map-shell { height: 43svh; min-height: 310px; max-height: 380px; }
       .legend { display: none; }
-      .day-nav { grid-template-columns: repeat(5, 1fr); gap: 6px; }
-      .day-button { min-height: 36px; border-radius: 10px; font-size: 11px; }
-      .metric-grid { grid-template-columns: 1fr; }
+      .map-toolbar { gap: 6px; }
+      .map-tool { min-height: 42px; padding-inline: 10px; }
+      .day-button { border-radius: 12px; font-size: 11px; }
+      .overview-title h3,
+      .day-heading h3 { font-size: 18px; }
+      .metric-grid { grid-template-columns: 1fr 1fr; }
+      .metric { padding: 11px; }
       .overview-day { grid-template-columns: 34px 1fr; }
       .overview-day em { grid-column: 2; }
       .flight-strip { grid-template-columns: 1fr; }
-      .schedule-item { grid-template-columns: 82px 1fr; gap: 9px; }
+      .schedule-item { grid-template-columns: 1fr; gap: 4px; padding: 11px 12px; }
+      .schedule-time {
+        width: max-content;
+        padding: 3px 7px;
+        border-radius: 999px;
+        background: var(--green-soft);
+      }
+      .info-card { padding: 12px; }
+      .leg { margin-left: 42px; }
     }
   </style>
 </head>
@@ -1222,7 +1292,10 @@ svg.leaflet-image-layer.leaflet-interactive path {
         <p>2026.09.30–10.08 · Perth → Wave Rock → Esperance → Albany → Fremantle</p>
       </div>
     </div>
-    <a class="page-link" href="./itinerary.html">完整文字版 →</a>
+    <a class="page-link" href="./itinerary.html" aria-label="打开完整文字版">
+      <span class="page-link-full">完整文字版 →</span>
+      <span class="page-link-short">文字版</span>
+    </a>
     <div class="top-stats" aria-label="行程概览">
       <div class="top-stat"><strong>9/30–10/8</strong><span>9 天 8 晚</span></div>
       <div class="top-stat"><strong>约 1,980 km</strong><span>自驾主线*</span></div>

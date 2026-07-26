@@ -419,28 +419,95 @@
       .hero-figure { min-height: 330px; }
       .summary { grid-template-columns: 1fr 1fr; }
       .content { grid-template-columns: 1fr; }
-      .toc { position: static; }
       .toc-list { grid-template-columns: repeat(3, 1fr); }
     }
 
     @media (max-width: 620px) {
-      .topbar { padding: 10px 12px; }
+      body { overflow-x: hidden; }
+      .topbar,
+      .hero,
+      .summary,
+      .content { width: 100%; min-width: 0; }
+      .topbar {
+        min-height: 58px;
+        padding: 9px max(12px, env(safe-area-inset-left)) 9px max(12px, env(safe-area-inset-right));
+      }
+      .brand strong { font-size: 14px; }
       .brand span { display: none; }
-      .view-switch a { padding: 7px 9px; }
-      .hero { padding: 25px 13px 22px; }
-      .hero h1 { font-size: 36px; }
-      .hero-figure { min-height: 250px; border-radius: 18px; }
+      .view-switch { gap: 5px; }
+      .view-switch a {
+        min-height: 40px;
+        padding: 0 10px;
+        display: grid;
+        place-items: center;
+      }
+      .hero { padding: 24px 13px 20px; gap: 20px; }
+      .hero h1 { font-size: 31px; line-height: 1.08; }
+      .hero-copy { margin-top: 13px; font-size: 13px; line-height: 1.68; }
+      .hero-meta { margin-top: 15px; gap: 6px; }
+      .hero-meta span { padding: 7px 9px; }
+      .hero-figure { min-height: 220px; border-radius: 18px; }
       .summary { padding: 0 13px 23px; }
+      .summary-card { padding: 12px; }
+      .summary-card strong { font-size: 14px; }
       .content { padding: 0 13px 45px; gap: 14px; }
-      .toc-list { grid-template-columns: 1fr 1fr; }
+      .toc {
+        position: sticky;
+        top: 58px;
+        z-index: 15;
+        margin: 0 -13px;
+        padding: 9px 13px 10px;
+        overflow: hidden;
+        border-width: 1px 0;
+        border-radius: 0;
+        background: rgba(245, 242, 233, .94);
+        box-shadow: 0 8px 20px rgba(29, 49, 40, .07);
+      }
+      .toc h2 { display: none; }
+      .toc-list {
+        display: flex;
+        gap: 7px;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      .toc-list::-webkit-scrollbar { display: none; }
+      .toc-list a {
+        min-height: 42px;
+        flex: 0 0 auto;
+        grid-template-columns: 27px auto;
+        align-items: center;
+        padding: 7px 9px;
+        border: 1px solid #d8ddd7;
+        border-radius: 11px;
+        background: rgba(255, 255, 255, .82);
+        white-space: nowrap;
+      }
       .booking-grid { grid-template-columns: 1fr; }
-      .day-photo { height: 220px; }
-      .day-body { padding: 17px; }
-      .day-title h2 { font-size: 21px; }
-      .facts { grid-template-columns: 1fr; }
-      .schedule-row { grid-template-columns: 90px 1fr; gap: 9px; }
+      .booking-card { padding: 16px; border-radius: 17px; }
+      .day-card { border-radius: 18px; scroll-margin-top: 116px; }
+      .day-photo { height: 205px; }
+      .day-body { padding: 16px; }
+      .day-title { gap: 10px; }
+      .day-title h2 { font-size: 19px; line-height: 1.3; }
+      .facts { grid-template-columns: 1fr 1fr; }
+      .schedule-row { grid-template-columns: 1fr; gap: 4px; padding: 11px; }
+      .schedule-time {
+        width: max-content;
+        padding: 3px 7px;
+        border-radius: 999px;
+        background: var(--green-soft);
+      }
       .route-stop { grid-template-columns: 28px 1fr; }
-      .map-link { grid-column: 2; justify-self: start; }
+      .map-link {
+        min-height: 34px;
+        grid-column: 2;
+        display: inline-flex;
+        align-items: center;
+        justify-self: start;
+      }
+      .links a { min-height: 34px; display: inline-flex; align-items: center; }
     }
 
     @media print {
