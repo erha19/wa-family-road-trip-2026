@@ -4,6 +4,8 @@
 
 已补充 The Jetty Resort、Mandala Ace Albany、43 Mews Road Fremantle 公寓、Changi Transit Hotel T1，以及 Nanjing—Singapore—Perth—Singapore—Hangzhou 四段 Scoot 航班信息。
 
+D2 加入 Lake Magic 盐湖短停，D8 加入 Rottnest Island 的 Garden Lake 盐湖，并将岛上 Pink Lake 标为可选点。
+
 - [路线地图](./index.html)
 - [完整文字攻略](./itinerary.html)
 
