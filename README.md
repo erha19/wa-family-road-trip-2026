@@ -4,9 +4,9 @@
 
 已补充 The Jetty Resort、Mandala Ace Albany、43 Mews Road Fremantle 公寓、Changi Transit Hotel T1，以及 Nanjing—Singapore—Perth—Singapore—Hangzhou 四段 Scoot 航班信息。
 
-D2 加入 Lake Magic 盐湖短停，D8 加入 Rottnest Island 的 Garden Lake 盐湖，并将岛上 Pink Lake 标为可选点。
+D1 落地取车后先到 Belmont Forum 集中采购再前往 Hyden；D2 加入 Lake Magic 盐湖短停；D5 取消 Middleton Beach 并改为 09:30 舒适出发；D6 取消出海观鲸，改为 The Gap 岸上观鲸与 Discovery Bay 亲子游览；D8 加入 Rottnest Island 的 Garden Lake 盐湖，并将岛上 Pink Lake 标为可选点。
 
-完整文字攻略另含 D10 新加坡樟宜机场过境酒店、Jewel 雨漩涡、Forest Valley 与亲子活动二选一安排；地图路线仍只展示西澳 D1–D9。
+完整文字攻略另含逐项门票价格、提前预订等级，以及 D10 新加坡樟宜机场过境酒店、Jewel 雨漩涡、Forest Valley 与亲子活动二选一安排；地图路线仍只展示西澳 D1–D9。
 
 - [路线地图](./index.html)
 - [完整文字攻略](./itinerary.html)
