@@ -6,6 +6,8 @@
 
 D2 加入 Lake Magic 盐湖短停，D8 加入 Rottnest Island 的 Garden Lake 盐湖，并将岛上 Pink Lake 标为可选点。
 
+完整文字攻略另含 D10 新加坡樟宜机场过境酒店、Jewel 雨漩涡、Forest Valley 与亲子活动二选一安排；地图路线仍只展示西澳 D1–D9。
+
 - [路线地图](./index.html)
 - [完整文字攻略](./itinerary.html)
 
