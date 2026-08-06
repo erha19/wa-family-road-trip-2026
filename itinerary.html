@@ -309,6 +309,36 @@
 
     .lead { margin: 14px 0 0; color: #4f5e56; font-size: 13px; line-height: 1.75; }
 
+    .day-reminder {
+      margin-top: 13px;
+      padding: 13px 14px;
+      border: 1px solid #f0c36a;
+      border-radius: 13px;
+      color: #6b4d13;
+      background: #fff6da;
+      box-shadow: inset 4px 0 0 #e8a817;
+    }
+
+    .day-reminder strong { display: block; font-size: 12px; line-height: 1.45; }
+    .day-reminder span { display: block; margin-top: 4px; font-size: 10px; line-height: 1.6; }
+
+    .day-action {
+      margin-top: 13px;
+      padding: 13px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-radius: 13px;
+      color: #fff;
+      background: #087f7d;
+      text-decoration: none;
+    }
+
+    .day-action strong { display: block; font-size: 12px; line-height: 1.4; }
+    .day-action span { display: block; margin-top: 3px; color: rgba(255,255,255,.8); font-size: 9px; line-height: 1.5; }
+    .day-action b { flex: 0 0 auto; font-size: 11px; white-space: nowrap; }
+
     .facts {
       margin-top: 15px;
       display: grid;
@@ -747,6 +777,11 @@
       totalTime: "16:30 起飞 · 13:45 回到 T1",
       stay: "Changi Transit Hotel T1 · 01:00–07:00",
       summary: "TR009 于 10 月 8 日 23:45 抵达樟宜 T1；凌晨入住过境酒店睡 6 小时。早餐后入境前往 Jewel，上午集中看雨漩涡和森林谷，午餐后只选一个亲子活动，再提前回 T1 办理出境和候机。",
+      action: {
+        label: "填写 SG Arrival Card（全家）",
+        note: "新加坡 ICA 官方免费入口 · 抵达前完成",
+        url: "https://eservices.ica.gov.sg/sgarrivalcard/"
+      },
       schedule: [
         ["01:00–07:00", "T1 过境酒店睡觉 / Transit Hotel Sleep", "酒店位于转机区；入住前确认下一程登机牌、行李直挂杭州及退房时间。"],
         ["08:00–08:40", "早餐 / Breakfast", "退房后在 T1 转机区简单早餐，整理证件、尿布和当天随身物品。"],
@@ -774,6 +809,10 @@
       if (day.id === "D7") {
         return {
           ...day,
+          reminder: {
+            title: "🛂 10月6日：SG Arrival Card 最早可提交",
+            body: "你们将于 10 月 8 日 23:45 抵达新加坡；按抵达日计入 3 天，今天起可为全家免费提交。"
+          },
           schedule: [
             ...day.schedule,
             ["20:00", "🛂 提交 SG Arrival Card / Submit SGAC", "10 月 8 日 23:45 抵达新加坡，按抵达日计入 3 天，可从 10 月 6 日开始免费提交；建议通过 ICA 官网或 MyICA 为全家填写。"]
@@ -784,6 +823,10 @@
       if (day.id === "D8") {
         return {
           ...day,
+          reminder: {
+            title: "🛂 10月7日：再次检查 SG Arrival Card",
+            body: "确认全家均已提交，并保存确认邮件；尚未完成时今晚补填，避免 D9 出发当天临时处理。"
+          },
           schedule: [
             ...day.schedule,
             ["晚餐后", "🛂 SG Arrival Card 二次提醒 / SGAC Check", "检查全家 SGAC 是否已成功提交并保存确认邮件；尚未填写则使用 ICA 官方入口完成。"]
@@ -912,6 +955,8 @@
               <span class="day-badge" style="background:${day.color}">${day.id}</span>
             </div>
             <p class="lead">${day.summary}</p>
+            ${day.reminder ? `<div class="day-reminder"><strong>${day.reminder.title}</strong><span>${day.reminder.body}</span></div>` : ""}
+            ${day.action ? `<a class="day-action" href="${day.action.url}" target="_blank" rel="noreferrer"><span><strong>${day.action.label}</strong><span>${day.action.note}</span></span><b>立即填写 ↗</b></a>` : ""}
             <div class="facts">
               <div class="fact"><span>当天距离</span><strong>${distanceLabel}</strong></div>
               <div class="fact"><span>驾驶与节奏</span><strong>${day.totalTime}</strong></div>
