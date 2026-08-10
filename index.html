@@ -1352,8 +1352,155 @@ svg.leaflet-image-layer.leaflet-interactive path {
       .leg { margin-left: 42px; }
     }
   </style>
+
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <script>document.documentElement.classList.add("site-locked");</script>
+  <style>
+    html.site-locked { overflow: hidden; }
+    html.site-locked body > :not(#site-access-gate) { visibility: hidden !important; }
+    #site-access-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      display: none;
+      place-items: center;
+      overflow: auto;
+      padding: max(24px, env(safe-area-inset-top)) 18px max(24px, env(safe-area-inset-bottom));
+      color: #17251e;
+      background:
+        radial-gradient(circle at 16% 8%, rgba(220, 174, 98, .23), transparent 28rem),
+        linear-gradient(145deg, #f7f3e9 0%, #e8efe9 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    html.site-locked #site-access-gate { display: grid; }
+    .site-access-card {
+      width: min(100%, 410px);
+      padding: 30px 26px 25px;
+      border: 1px solid rgba(15, 89, 66, .14);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, .96);
+      box-shadow: 0 24px 70px rgba(28, 52, 42, .16);
+      text-align: center;
+    }
+    .site-access-icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 17px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      color: #fff;
+      background: linear-gradient(145deg, #0f5b44, #123b31);
+      box-shadow: 0 10px 24px rgba(15, 89, 66, .24);
+      font-size: 25px;
+    }
+    .site-access-card h1 { margin: 0; font-size: 25px; line-height: 1.2; }
+    .site-access-card p { margin: 10px 0 21px; color: #68736d; font-size: 14px; line-height: 1.65; }
+    .site-access-label { display: block; margin-bottom: 8px; color: #3e4d45; font-size: 12px; font-weight: 750; text-align: left; }
+    .site-access-input {
+      width: 100%;
+      height: 50px;
+      padding: 0 15px;
+      border: 1px solid #cdd8d1;
+      border-radius: 13px;
+      outline: none;
+      color: #17251e;
+      background: #fff;
+      font: inherit;
+      font-size: 18px;
+      letter-spacing: .14em;
+      transition: border-color .18s, box-shadow .18s;
+    }
+    .site-access-input:focus { border-color: #0f5b44; box-shadow: 0 0 0 4px rgba(15, 91, 68, .11); }
+    .site-access-submit {
+      width: 100%;
+      min-height: 50px;
+      margin-top: 12px;
+      border: 0;
+      border-radius: 13px;
+      color: #fff;
+      background: #0f5b44;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .site-access-submit:disabled { cursor: wait; opacity: .68; }
+    .site-access-error { min-height: 20px; margin: 10px 0 0 !important; color: #b42318 !important; font-size: 12px !important; }
+    .site-access-note { margin: 4px 0 0 !important; color: #89928d !important; font-size: 11px !important; }
+    @media (max-width: 480px) {
+      .site-access-card { padding: 27px 20px 22px; border-radius: 20px; }
+      .site-access-card h1 { font-size: 23px; }
+    }
+  </style>
 </head>
 <body>
+  <section id="site-access-gate" role="dialog" aria-modal="true" aria-labelledby="site-access-title">
+    <div class="site-access-card">
+      <div class="site-access-icon" aria-hidden="true">🔐</div>
+      <h1 id="site-access-title">私人行程</h1>
+      <p>请输入访问密码，验证后即可查看西澳亲子自驾地图与完整文字攻略。</p>
+      <form id="site-access-form">
+        <label class="site-access-label" for="site-access-password">访问密码</label>
+        <input class="site-access-input" id="site-access-password" name="password" type="password" inputmode="numeric" autocomplete="current-password" required aria-describedby="site-access-error">
+        <button class="site-access-submit" type="submit">进入行程</button>
+        <p class="site-access-error" id="site-access-error" role="status" aria-live="polite"></p>
+      </form>
+      <p class="site-access-note">验证仅保留在当前浏览器会话中</p>
+    </div>
+  </section>
+  <script>
+    (() => {
+      const expectedHash = "22dbdb8fdc62bbbb20d114013025401b9b14c1577e1bc2e29dd623e739d4d82b";
+      const storageKey = "wa-trip-access-v1";
+      const root = document.documentElement;
+      const gate = document.getElementById("site-access-gate");
+      const form = document.getElementById("site-access-form");
+      const input = document.getElementById("site-access-password");
+      const button = form.querySelector("button");
+      const error = document.getElementById("site-access-error");
+
+      const unlock = () => {
+        root.classList.remove("site-locked");
+        gate.remove();
+        window.dispatchEvent(new Event("resize"));
+      };
+
+      if (sessionStorage.getItem(storageKey) === expectedHash) {
+        unlock();
+        return;
+      }
+
+      const digest = async (value) => {
+        const bytes = new TextEncoder().encode(value);
+        const hash = await crypto.subtle.digest("SHA-256", bytes);
+        return Array.from(new Uint8Array(hash), (byte) => byte.toString(16).padStart(2, "0")).join("");
+      };
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        error.textContent = "";
+        button.disabled = true;
+        button.textContent = "正在验证…";
+        try {
+          if (await digest(input.value) === expectedHash) {
+            sessionStorage.setItem(storageKey, expectedHash);
+            unlock();
+            return;
+          }
+          error.textContent = "密码不正确，请重新输入。";
+          input.value = "";
+          input.focus();
+        } catch {
+          error.textContent = "当前浏览器无法完成验证，请更换新版浏览器。";
+        } finally {
+          button.disabled = false;
+          button.textContent = "进入行程";
+        }
+      });
+
+      requestAnimationFrame(() => input.focus());
+    })();
+  </script>
   <header class="topbar">
     <div class="brand">
       <div class="brand-mark" aria-hidden="true">🦘</div>
