@@ -938,39 +938,55 @@
 
   <style>.location-tools {
   display: inline-flex !important;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
   align-items: center;
-  gap: 6px;
-  margin: 4px 0 4px 6px !important;
+  gap: 2px;
+  margin: 0 0 0 4px !important;
+  padding: 0;
+  line-height: 1;
+  white-space: nowrap;
   vertical-align: middle;
   max-width: 100%;
 }
 .location-tools button, .location-tools a {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 36px;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  min-height: 0;
   margin: 0;
-  padding: 6px 9px;
-  border: 1px solid #cbdcd3;
-  border-radius: 8px;
-  background: #f0f6f2;
-  color: #16523d;
-  font: 700 12px/1.3 -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #47685b;
+  font: inherit;
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
   touch-action: manipulation;
 }
 .location-tools button:hover, .location-tools a:hover { background: #e1eee6; }
+.location-tools a { color: #176547; }
+.location-tools svg { display: block; width: 16px; height: 16px; pointer-events: none; }
+.location-tools .location-icon-check { display: none; }
+.location-tools .is-copied { color: #176547; background: #e1eee6; }
+.location-tools .is-copied .location-icon-copy { display: none; }
+.location-tools .is-copied .location-icon-check { display: block; }
 .location-tools button:focus-visible, .location-tools a:focus-visible { outline: 3px solid #c58421; outline-offset: 2px; }
 .location-inline { display: inline !important; margin: 0 !important; font: inherit !important; color: inherit !important; }
 .location-inline > .location-address-text { display: inline !important; margin: 0 !important; font: inherit !important; color: inherit !important; }
 .location-address-text { overflow-wrap: anywhere; }
 .stop-name, .route-name { min-width: 0; overflow-wrap: anywhere; }
-.stop { padding-block: 6px; }
-.stop > .location-tools { grid-column: 2; justify-self: end; }
+.stop { padding-block: 6px; grid-template-columns: 34px minmax(0, 1fr) auto; }
+.stop > .location-tools, .route-stop > .location-tools { grid-column: 3; justify-self: end; margin: 0 !important; }
 .route-stop { grid-template-columns: 28px minmax(0, 1fr) auto; }
+.stop > .location-tools > *, .route-stop > .location-tools > * { width: 34px; height: 34px; flex-basis: 34px; }
+.stop .location-address-text, .route-stop .location-address-text { font-weight: 400; line-height: 1.5; }
+.popup-en + .location-address-text { display: block; margin-top: 5px; color: #68736d; font-size: 11px; }
+.leaflet-popup-content > .location-tools { display: flex !important; justify-content: flex-end; margin-top: 6px !important; }
 .location-status {
   position: fixed;
   z-index: 10000;
@@ -995,9 +1011,9 @@
 #location-manual textarea { width: 100%; min-height: 100px; padding: 10px; font: inherit; font-size: 16px; }
 #location-manual button { margin-top: 12px; min-height: 44px; padding: 8px 20px; border: 0; border-radius: 9px; color: white; background: #16523d; }
 @media (max-width: 620px) {
-  .route-stop { grid-template-columns: 28px minmax(0, 1fr); }
-  .route-stop > .location-tools { grid-column: 2; justify-self: end; }
-  .location-tools button, .location-tools a { min-height: 44px; }
+  .stop, .route-stop { column-gap: 8px; }
+  .stop > .location-tools > *, .route-stop > .location-tools > * { width: 40px; height: 44px; flex-basis: 40px; }
+  .stop > .location-tools svg, .route-stop > .location-tools svg { width: 18px; height: 18px; }
 }
 @media print { .location-tools, .location-status, #location-manual { display: none !important; } }
 </style>
@@ -1023,9 +1039,12 @@
   const query = (p, key) => address(key) || coordinates(p) || `${p.en || p.name}, Changi Airport, Singapore`;
   const mapsUrl = (p, key) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query(p, key))}`;
   const copyText = (p, key) => address(key) || [p.en || p.name, coordinates(p) || "Changi Airport, Singapore"].join(" · ");
+  const copyIcon = '<svg class="location-icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>';
+  const checkIcon = '<svg class="location-icon-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 12 4 4L19 6"/></svg>';
+  const mapsIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m21 3-7 18-3.5-7.5L3 10z"/></svg>';
   const actions = (p, key) => `<span class="location-tools" role="group" aria-label="${escapeHtml(p.name)}的位置操作">
-    <button type="button" class="location-copy" data-copy-location="${escapeHtml(copyText(p, key))}" aria-label="复制${escapeHtml(p.name)}的地址或定位">复制地址</button>
-    <a href="${escapeHtml(mapsUrl(p, key))}" target="_blank" rel="noopener noreferrer" aria-label="在 Google Maps 查找${escapeHtml(p.name)}">Google Maps ↗</a>
+    <button type="button" class="location-copy" data-copy-location="${escapeHtml(copyText(p, key))}" title="复制地址" aria-label="复制${escapeHtml(p.name)}的地址或定位">${copyIcon}${checkIcon}</button>
+    <a href="${escapeHtml(mapsUrl(p, key))}" target="_blank" rel="noopener noreferrer" title="在 Google Maps 中打开" aria-label="在 Google Maps 查找${escapeHtml(p.name)}">${mapsIcon}</a>
   </span>`;
   const addressLine = (key) => address(key) ? `<span class="location-address-text">${escapeHtml(address(key))}</span>` : "";
 
@@ -1109,8 +1128,12 @@
     if (!control.matches("[data-copy-location]")) return;
     event.preventDefault();
     const value = control.dataset.copyLocation;
-    if (await copy(value)) announce("地址已复制，可粘贴到地图搜索");
-    else manualCopy(value);
+    if (await copy(value)) {
+      control.classList.add("is-copied");
+      control.title = "已复制";
+      setTimeout(() => { control.classList.remove("is-copied"); control.title = "复制地址"; }, 2200);
+      announce("地址已复制");
+    } else manualCopy(value);
   }, true);
 
   window.tripLocations = {
